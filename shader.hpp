@@ -15,6 +15,8 @@ public:
     void use();
 	void setVec3(const char* name, glm::vec3 vec);
 	void setMat4(const char* name, glm::mat4 mat);
+	void setFloat(const char* name, float value);
+	void setInt(const char* name, int value);
 };
 
 std::string readShaderFile(const char* shaderFilePath) {
@@ -60,5 +62,15 @@ void Shader::setVec3(const char* name, glm::vec3 vec) {
 void Shader::setMat4(const char* name, glm::mat4 mat) {
 	int location = glGetUniformLocation(ID, name);
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void Shader::setFloat(const char* name, float value) {
+	int location = glGetUniformLocation(ID, name);
+	glUniform1f(location, value);
+}
+
+void Shader::setInt(const char* name, int value) {
+	int location = glGetUniformLocation(ID, name);
+	glUniform1i(location, value);
 }
 #endif

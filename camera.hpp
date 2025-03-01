@@ -25,6 +25,7 @@ public:
 	Camera();
 	Camera(glm::vec3 cameraPos);
 	glm::vec3 getPos();
+	glm::vec3 getFront();
 	glm::mat4 getViewMat();
 	glm::mat4 getProjectionMat();
 	void processKeyboard(Direction d);
@@ -68,6 +69,10 @@ Camera::Camera(glm::vec3 cameraPos) {
 
 glm::vec3 Camera::getPos() {
 	return pos;
+}
+
+glm::vec3 Camera::getFront() {
+	return front;
 }
 
 glm::mat4 Camera::getViewMat() {

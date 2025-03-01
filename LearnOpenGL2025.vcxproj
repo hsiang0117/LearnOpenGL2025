@@ -25,15 +25,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\box.frag" />
+    <None Include="Shaders\backpack.frag" />
+    <None Include="Shaders\backpack.vert" />
+    <None Include="Shaders\grass.frag" />
+    <None Include="Shaders\grass.vert" />
+    <None Include="Shaders\multiLight.frag" />
     <None Include="Shaders\box.vert" />
     <None Include="Shaders\light.frag" />
     <None Include="Shaders\light.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.hpp" />
-    <ClInclude Include="light.hpp" />
-    <ClInclude Include="material.hpp" />
+    <ClInclude Include="grass.hpp" />
+    <ClInclude Include="mesh.hpp" />
+    <ClInclude Include="model.hpp" />
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.hpp" />
@@ -92,6 +97,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\C++ Projects\OpenGLtemplate\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\C++ projects\OpenGLtemplate\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>D:\C++ Projects\OpenGLtemplate\include;$(IncludePath)</IncludePath>
@@ -135,7 +141,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\C++ Projects\OpenGLtemplate\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;glew32s.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

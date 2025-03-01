@@ -26,13 +26,25 @@
     <None Include="Shaders\box.vert">
       <Filter>源文件\Shaders</Filter>
     </None>
-    <None Include="Shaders\box.frag">
-      <Filter>源文件\Shaders</Filter>
-    </None>
     <None Include="Shaders\light.vert">
       <Filter>源文件\Shaders</Filter>
     </None>
     <None Include="Shaders\light.frag">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\multiLight.frag">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\backpack.vert">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\backpack.frag">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\grass.vert">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\grass.frag">
       <Filter>源文件\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -49,10 +61,13 @@
     <ClInclude Include="camera.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="light.hpp">
+    <ClInclude Include="mesh.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="material.hpp">
+    <ClInclude Include="model.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="grass.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

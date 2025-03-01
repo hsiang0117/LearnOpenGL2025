@@ -4,96 +4,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
-#include "texture.hpp"
-#include "light.hpp"
+#include "model.hpp"
+#include "grass.hpp"
 
 static float scrWidth = 800.0f;
 static float scrHeight = 600.0f;
 #include "camera.hpp"
 
-#define numVAOs 2
-#define numVBOs 1
-#define numEBOs 1
-
-GLuint vao[numVAOs];
-GLuint vbo[numVBOs];
-GLuint ebo[numEBOs];
-
 void processInput(GLFWwindow* window);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
-void init() {
-	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-	};
-
-	//1.创建VAO、VBO和EBO
-	glGenVertexArrays(numVAOs, vao);
-	glGenBuffers(numVBOs, vbo);
-	//2.绑定VAO
-	glBindVertexArray(vao[0]);
-	//3.绑定和配置对应的VBO
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	//4.绑定和配置对应的EBO
-	//5.配置VAO属性指针
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	//6.解绑VAO和VBO供后续使用
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(vao[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
 
 Camera camera;
 
@@ -123,47 +44,52 @@ int main() {
 	glfwSetCursorPosCallback(window, mouseCallback);
 	glfwSetScrollCallback(window, scrollCallback);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
 
-	init();
-	Shader boxShader("./Shaders/box.vert", "./Shaders/box.frag");
-	Shader lightShader("./Shaders/light.vert", "./Shaders/light.frag");
+	Grass grass;
+	Model backpack("./Models/backpack/backpack.obj");
+	Shader backpackShader("./Shaders/backpack.vert", "./Shaders/backpack.frag");
+	Shader grassShader("./Shaders/grass.vert", "./Shaders/grass.frag");
 
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		boxShader.use();
-		boxShader.setVec3("lightPos", glm::vec3(1.2f, 1.0f, 2.0f));
-		boxShader.setVec3("cameraPos", camera.getPos());
-		boxShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-		boxShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-
+		backpackShader.use();
+		
 		glm::mat4 model(1.0f);
-		boxShader.setMat4("model", model);
+		backpackShader.setMat4("model", model);
 
 		glm::mat4 view = camera.getViewMat();
-		boxShader.setMat4("view", view);
+		backpackShader.setMat4("view", view);
 
 		glm::mat4 projection = camera.getProjectionMat();
-		boxShader.setMat4("projection", projection);
+		backpackShader.setMat4("projection", projection);
 
-		glBindVertexArray(vao[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+		backpackShader.setVec3("cameraPos", camera.getPos());
+		backpackShader.setVec3("pLight[0].pos", glm::vec3(1.2f, 0.5f, 1.0f));
+		backpackShader.setVec3("pLight[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		backpackShader.setVec3("pLight[0].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		backpackShader.setVec3("pLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		backpackShader.setFloat("pLight[0].constant", 1.0f);
+		backpackShader.setFloat("pLight[0].linear", 0.09f);
+		backpackShader.setFloat("pLight[0].quadratic", 0.031f);
+		backpackShader.setVec3("pLight[1].pos", camera.getPos());
+		backpackShader.setVec3("pLight[1].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		backpackShader.setVec3("pLight[1].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		backpackShader.setVec3("pLight[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		backpackShader.setFloat("pLight[1].constant", 1.0f);
+		backpackShader.setFloat("pLight[1].linear", 0.09f);
+		backpackShader.setFloat("pLight[1].quadratic", 0.031f);
 
-		lightShader.use();
+		backpack.Draw(backpackShader);
 
-		glm::mat4 lightModel(1.0);
-		lightModel = glm::translate(lightModel, glm::vec3(1.2f, 1.0f, 2.0f));
-		lightModel = glm::scale(lightModel, glm::vec3(0.2f));
-		lightShader.setMat4("model", lightModel);
-		lightShader.setMat4("view", view);
-		lightShader.setMat4("projection", projection);
-
-		glBindVertexArray(vao[1]);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+		grassShader.use();
+		grassShader.setMat4("model", model);
+		grassShader.setMat4("view", view);
+		grassShader.setMat4("projection", projection);
+		grass.draw(grassShader);
 
 		camera.updateDeltaTime();
 		glfwSwapBuffers(window);
