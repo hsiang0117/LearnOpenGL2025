@@ -5,7 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
 #include "model.hpp"
-#include "grass.hpp"
+#include "transparent.hpp"
+#include "skybox.hpp"
 
 static float scrWidth = 800.0f;
 static float scrHeight = 600.0f;
@@ -44,52 +45,66 @@ int main() {
 	glfwSetCursorPosCallback(window, mouseCallback);
 	glfwSetScrollCallback(window, scrollCallback);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_STENCIL_TEST);
+	glDepthFunc(GL_LEQUAL);
 
-	Grass grass;
-	Model backpack("./Models/backpack/backpack.obj");
-	Shader backpackShader("./Shaders/backpack.vert", "./Shaders/backpack.frag");
-	Shader grassShader("./Shaders/grass.vert", "./Shaders/grass.frag");
+	Model backpack("./Models/nanosuit_reflection/nanosuit.obj");
+	std::vector<std::string> faces{
+		"./Textures/skybox/right.jpg",
+		"./Textures/skybox/left.jpg",
+		"./Textures/skybox/top.jpg",
+		"./Textures/skybox/bottom.jpg",
+		"./Textures/skybox/front.jpg",
+		"./Textures/skybox/back.jpg"
+	};
+	Skybox skybox(faces);
+	Shader modelShader("./Shaders/model.vert", "./Shaders/model_environmentmapping.frag");
+	Shader skyboxShader("./Shaders/skybox.vert", "./Shaders/skybox.frag");
+
+	GLuint uboMatrices;
+	glGenBuffers(1, &uboMatrices);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	while (!glfwWindowShouldClose(window)) {
 		processInput(window);
-		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		backpackShader.use();
-		
 		glm::mat4 model(1.0f);
-		backpackShader.setMat4("model", model);
-
 		glm::mat4 view = camera.getViewMat();
-		backpackShader.setMat4("view", view);
-
 		glm::mat4 projection = camera.getProjectionMat();
-		backpackShader.setMat4("projection", projection);
 
-		backpackShader.setVec3("cameraPos", camera.getPos());
-		backpackShader.setVec3("pLight[0].pos", glm::vec3(1.2f, 0.5f, 1.0f));
-		backpackShader.setVec3("pLight[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-		backpackShader.setVec3("pLight[0].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-		backpackShader.setVec3("pLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-		backpackShader.setFloat("pLight[0].constant", 1.0f);
-		backpackShader.setFloat("pLight[0].linear", 0.09f);
-		backpackShader.setFloat("pLight[0].quadratic", 0.031f);
-		backpackShader.setVec3("pLight[1].pos", camera.getPos());
-		backpackShader.setVec3("pLight[1].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-		backpackShader.setVec3("pLight[1].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-		backpackShader.setVec3("pLight[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-		backpackShader.setFloat("pLight[1].constant", 1.0f);
-		backpackShader.setFloat("pLight[1].linear", 0.09f);
-		backpackShader.setFloat("pLight[1].quadratic", 0.031f);
+		glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-		backpack.Draw(backpackShader);
+		modelShader.use();
+		model = glm::scale(model, glm::vec3(0.2f));
+		modelShader.setMat4("model", model);
+		modelShader.setVec3("cameraPos", camera.getPos());
+		modelShader.setVec3("pLight[0].pos", glm::vec3(1.2f, 0.5f, 1.0f));
+		modelShader.setVec3("pLight[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		modelShader.setVec3("pLight[0].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		modelShader.setVec3("pLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		modelShader.setFloat("pLight[0].constant", 1.0f);
+		modelShader.setFloat("pLight[0].linear", 0.09f);
+		modelShader.setFloat("pLight[0].quadratic", 0.031f);
+		modelShader.setVec3("pLight[1].pos", camera.getPos());
+		modelShader.setVec3("pLight[1].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		modelShader.setVec3("pLight[1].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+		modelShader.setVec3("pLight[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		modelShader.setFloat("pLight[1].constant", 1.0f);
+		modelShader.setFloat("pLight[1].linear", 0.09f);
+		modelShader.setFloat("pLight[1].quadratic", 0.031f);
+		modelShader.setInt("skybox", 3);
+		skybox.texture.use(GL_TEXTURE3);
+		backpack.Draw(modelShader);
 
-		grassShader.use();
-		grassShader.setMat4("model", model);
-		grassShader.setMat4("view", view);
-		grassShader.setMat4("projection", projection);
-		grass.draw(grassShader);
+		skyboxShader.use();
+		skybox.draw(skyboxShader);
 
 		camera.updateDeltaTime();
 		glfwSwapBuffers(window);

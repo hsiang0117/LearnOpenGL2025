@@ -35,16 +35,31 @@
     <None Include="Shaders\multiLight.frag">
       <Filter>源文件\Shaders</Filter>
     </None>
-    <None Include="Shaders\backpack.vert">
+    <None Include="Shaders\model.vert">
       <Filter>源文件\Shaders</Filter>
     </None>
-    <None Include="Shaders\backpack.frag">
+    <None Include="Shaders\model.frag">
       <Filter>源文件\Shaders</Filter>
     </None>
-    <None Include="Shaders\grass.vert">
+    <None Include="Shaders\screen.frag">
       <Filter>源文件\Shaders</Filter>
     </None>
-    <None Include="Shaders\grass.frag">
+    <None Include="Shaders\screen.vert">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\skybox.frag">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\skybox.vert">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\transparent.frag">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\transparent.vert">
+      <Filter>源文件\Shaders</Filter>
+    </None>
+    <None Include="Shaders\model_environmentmapping.frag">
       <Filter>源文件\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -67,7 +82,10 @@
     <ClInclude Include="model.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="grass.hpp">
+    <ClInclude Include="skybox.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="transparent.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -60,19 +60,23 @@ void Mesh::draw(Shader &shader)
 {
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
+	unsigned int reflectionNr = 1;
 	for (unsigned int i = 0; i < textures.size(); i++) {
 		std::string number;
 		std::string name = textures[i].type;
-		if (name == "texture_diffuse") {
+		if (name == "textureDiffuse") {
 			number = std::to_string(diffuseNr++);
 		}
-		else if (name == "texture_specular") {
+		else if (name == "textureSpecular") {
 			number = std::to_string(specularNr++);
 		}
+		else if (name == "textureReflection") {
+			number = std::to_string(reflectionNr++);
+		}
 		shader.setInt((name + number).c_str(), i);
-		shader.setFloat("shininess", 32.0);
 		textures[i].use(GL_TEXTURE0 + i);
 	}
+	shader.setFloat("shininess", 32.0);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

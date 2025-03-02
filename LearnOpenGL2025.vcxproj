@@ -25,10 +25,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\backpack.frag" />
-    <None Include="Shaders\backpack.vert" />
-    <None Include="Shaders\grass.frag" />
-    <None Include="Shaders\grass.vert" />
+    <None Include="Shaders\model.frag" />
+    <None Include="Shaders\model.vert" />
+    <None Include="Shaders\model_environmentmapping.frag" />
+    <None Include="Shaders\skybox.frag" />
+    <None Include="Shaders\skybox.vert" />
+    <None Include="Shaders\screen.frag" />
+    <None Include="Shaders\screen.vert" />
+    <None Include="Shaders\transparent.frag" />
+    <None Include="Shaders\transparent.vert" />
     <None Include="Shaders\multiLight.frag" />
     <None Include="Shaders\box.vert" />
     <None Include="Shaders\light.frag" />
@@ -36,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.hpp" />
-    <ClInclude Include="grass.hpp" />
+    <ClInclude Include="skybox.hpp" />
+    <ClInclude Include="transparent.hpp" />
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="model.hpp" />
     <ClInclude Include="shader.hpp" />
